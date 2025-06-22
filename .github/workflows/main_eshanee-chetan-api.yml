@@ -21,24 +21,8 @@ jobs:
     - name: Install dependencies
       run: npm install
         
-    - name: Run tests (optional)
-      run: |
-        # npm test
-        echo "Skipping tests for now"
-        
-    - name: Build application
-      run: |
-        # Add build step if you have one
-        # npm run build
-        echo "No build step required"
-        
-    - name: Zip application files
-      run: |
-        zip -r node-app.zip . -x "*.git*" "node_modules/.cache/*" "*.md"
-        
     - name: Deploy to Azure Web App
-      uses: azure/webapps-deploy@v2
+      uses: azure/webapps-deploy@v1
       with:
         app-name: 'eshanee-chetan-api'
         publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-        package: './node-app.zip'

@@ -19,31 +19,30 @@ jobs:
         node-version: '20.x'
         
     - name: Install dependencies
-      run: |
-        cd eshanee-chetan-backend
-        npm ci
+      run: npm ci
         
     - name: Run tests (optional)
       run: |
-        cd eshanee-chetan-backend
         # npm test
+        echo "Skipping tests for now"
         
     - name: Build application
       run: |
-        cd eshanee-chetan-backend
         # Add build step if you have one
         # npm run build
+        echo "No build step required"
         
     - name: Create deployment package
       run: |
-        cd eshanee-chetan-backend
         # Remove dev dependencies and files not needed in production
         npm prune --production
         # Create a clean package for deployment
-        mkdir -p ../deployment-package
-        cp -r . ../deployment-package/
+        mkdir -p deployment-package
+        cp -r . deployment-package/
         # Remove unnecessary files
-        rm -rf ../deployment-package/node_modules/.cache || true
+        rm -rf deployment-package/node_modules/.cache || true
+        rm -rf deployment-package/.git || true
+        rm -rf deployment-package/.github || true
         
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v3

@@ -34,19 +34,22 @@ jobs:
         
     - name: Create deployment package
       run: |
-        # Remove dev dependencies and files not needed in production
-        npm prune --production
         # Create a clean package for deployment
         mkdir -p deployment-package
-        cp -r . deployment-package/
-        # Remove unnecessary files
-        rm -rf deployment-package/node_modules/.cache || true
-        rm -rf deployment-package/.git || true
-        rm -rf deployment-package/.github || true
+        # Copy specific files and directories needed for deployment
+        cp package*.json deployment-package/
+        cp -r node_modules deployment-package/ 2>/dev/null || npm install --prefix deployment-package
+        cp -r src deployment-package/ 2>/dev/null || true
+        cp server.js deployment-package/ 2>/dev/null || true
+        cp *.js deployment-package/ 2>/dev/null || true
+        cp *.json deployment-package/ 2>/dev/null || true
+        cp .env* deployment-package/ 2>/dev/null || true
+        # Copy any other necessary files
+        find . -maxdepth 1 -name "*.md" -exec cp {} deployment-package/ \; 2>/dev/null || true
         
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v3
       with:
         app-name: 'eshanee-chetan-api'
         publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-        package: './deployment-package'
+        package: '.'

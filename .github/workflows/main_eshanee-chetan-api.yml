@@ -3,27 +3,53 @@ name: Build and deploy Node.js app to Azure Web App
 on:
   push:
     branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-
+    
     steps:
-    - uses: actions/checkout@v2
-
-    - name: Set up Node.js version
-      uses: actions/setup-node@v1
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
       with:
         node-version: '20.x'
-
-    - name: npm install and build
+        cache: 'npm'
+        cache-dependency-path: './eshanee-chetan-backend/package-lock.json'
+        
+    - name: Install dependencies
       run: |
         cd eshanee-chetan-backend
-        npm install
+        npm ci
         
-    - name: 'Deploy to Azure Web App'
-      uses: azure/webapps-deploy@v2
+    - name: Run tests (optional)
+      run: |
+        cd eshanee-chetan-backend
+        # npm test
+        
+    - name: Build application
+      run: |
+        cd eshanee-chetan-backend
+        # Add build step if you have one
+        # npm run build
+        
+    - name: Create deployment package
+      run: |
+        cd eshanee-chetan-backend
+        # Remove dev dependencies and files not needed in production
+        npm prune --production
+        # Create a clean package for deployment
+        mkdir -p ../deployment-package
+        cp -r . ../deployment-package/
+        # Remove unnecessary files
+        rm -rf ../deployment-package/node_modules/.cache || true
+        
+    - name: Deploy to Azure Web App
+      uses: azure/webapps-deploy@v3
       with:
         app-name: 'eshanee-chetan-api'
         publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-        package: ./eshanee-chetan-backend
+        package: './deployment-package'

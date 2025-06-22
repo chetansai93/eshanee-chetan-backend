@@ -32,24 +32,13 @@ jobs:
         # npm run build
         echo "No build step required"
         
-    - name: Create deployment package
+    - name: Zip application files
       run: |
-        # Create a clean package for deployment
-        mkdir -p deployment-package
-        # Copy specific files and directories needed for deployment
-        cp package*.json deployment-package/
-        cp -r node_modules deployment-package/ 2>/dev/null || npm install --prefix deployment-package
-        cp -r src deployment-package/ 2>/dev/null || true
-        cp server.js deployment-package/ 2>/dev/null || true
-        cp *.js deployment-package/ 2>/dev/null || true
-        cp *.json deployment-package/ 2>/dev/null || true
-        cp .env* deployment-package/ 2>/dev/null || true
-        # Copy any other necessary files
-        find . -maxdepth 1 -name "*.md" -exec cp {} deployment-package/ \; 2>/dev/null || true
+        zip -r node-app.zip . -x "*.git*" "node_modules/.cache/*" "*.md"
         
     - name: Deploy to Azure Web App
-      uses: azure/webapps-deploy@v3
+      uses: azure/webapps-deploy@v2
       with:
         app-name: 'eshanee-chetan-api'
         publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-        package: '.'
+        package: './node-app.zip'

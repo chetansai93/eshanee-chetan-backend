@@ -14,6 +14,7 @@ const orderRoutes = require('./routes/orderRoutes');
 const { testConnection } = require('./config/database');
 
 const app = express();
+app.set('trust proxy', 1);
 
 // Security middleware
 app.use(helmet());

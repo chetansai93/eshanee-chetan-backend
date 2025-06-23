@@ -15,6 +15,7 @@ const { testConnection } = require('./config/database');
 
 const app = express();
 app.set('trust proxy', 1);
+console.log('Trust proxy setting:', app.get('trust proxy'));
 
 // Security middleware
 app.use(helmet());

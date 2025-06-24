@@ -1,0 +1,30 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Debug Backend",
+        "type": "node",
+        "request": "launch",
+        "program": "${workspaceFolder}/server.js",
+        "env": {
+          "NODE_ENV": "development",
+          "PORT": "5000"
+        },
+        "envFile": "${workspaceFolder}/.env",
+        "console": "integratedTerminal",
+        "restart": true,
+        "skipFiles": ["<node_internals>/**"],
+        "port": 9229
+      },
+      {
+        "name": "Debug Backend (Attach)",
+        "type": "node",
+        "request": "attach",
+        "port": 9229,
+        "restart": true,
+        "localRoot": "${workspaceFolder}",
+        "remoteRoot": ".",
+        "skipFiles": ["<node_internals>/**"]
+      }
+    ]
+  }
